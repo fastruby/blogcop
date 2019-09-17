@@ -24,6 +24,9 @@ class GHAapp < Sinatra::Application
   # The GitHub App's identifier (type integer) set when registering an app.
   APP_IDENTIFIER = ENV['GITHUB_APP_IDENTIFIER']
 
+  OUTDATED_MONTHS = 3
+  MAIN_BRANCH = 'master'
+
   # Turn on Sinatra's verbose logging during development
   configure :development do
     set :logging, Logger::DEBUG
@@ -41,13 +44,149 @@ class GHAapp < Sinatra::Application
 
 
   post '/event_handler' do
+    case request.env['HTTP_X_GITHUB_EVENT']
+    when 'push'
+      unpublish_outdated_articles if push_made_to_master
+    end
 
     200 # success status
   end
 
 
   helpers do
+    def push_made_to_master
+      @payload['ref'] == 'refs/heads/master'
+    end
 
+    def unpublish_outdated_articles
+      articles = @client.contents(repository, path: '_posts')
+
+      articles.each do |article|
+        @article = article
+        commits = @client.commits(repository, MAIN_BRANCH, path: @article[:path])
+        last_commit_date = commits.first[:commit][:committer][:date].to_date
+
+        if last_commit_date < expiration_date
+          puts "#{@article[:path]} is outdated"
+
+          next if branch_already_created
+
+          create_branch
+          push_commit
+          create_pull_request
+          create_issue
+        end
+      end
+    end
+
+    def expiration_date
+      Date.today << OUTDATED_MONTHS
+    end
+
+    def repository
+      @payload['repository']['full_name']
+    end
+
+    def branch_already_created
+      branches = @client.refs(repository, nil, per_page: 100).map(&:ref)
+      branch = "refs/heads/#{branch_name}"
+      branches.include?(branch)
+    end
+
+    def branch_name
+      "unpublish/#{@article[:name]}"
+    end
+
+    def last_commit_on_master
+      @client.commits(repository, MAIN_BRANCH).first
+    end
+
+    def create_branch
+      puts 'Creating Branch'
+
+      @client.create_ref(
+        repository,
+        "heads/#{branch_name}",
+        last_commit_on_master[:sha])
+    end
+
+    def create_pull_request
+      puts 'Creating Pull Request'
+
+      @client.create_pull_request(
+        repository,
+        MAIN_BRANCH,
+        branch_name,
+        pull_request_title,
+        pull_request_body)
+    end
+
+    def pull_request_title
+      'Unpublish outdated article'
+    end
+
+    def pull_request_body
+      "This PR unpublishes the article `#{@article[:path]}` because " +
+      "its last update was more than #{OUTDATED_MONTHS} months ago."
+    end
+
+    def create_issue
+      puts 'Creating Issue'
+
+      begin
+        @client.create_issue(repository, issue_title, issue_body)
+      rescue Octokit::ClientError => error
+        # Issues can be disabled in the repository settings so this can fail.
+        puts error
+      end
+    end
+
+    def issue_title
+      "#{@article[:path]} needs to be updated"
+    end
+
+    def issue_body
+      "`#{@article[:path]}` has been marked as unpublished and needs to be updated"
+    end
+
+    def push_commit
+      puts 'Pushing commit'
+
+      @client.update_contents(
+        repository,
+        @article[:path],
+        'Unpublish outdated article',
+        @article[:sha],
+        unpublished_body,
+        branch: branch_name)
+    end
+
+    def unpublished_body
+      article_body.gsub(article_header, unpublished_header)
+    end
+
+    def article_body
+      HTTParty.get(@article[:download_url]).body
+    end
+
+    def article_header
+      article_body[/#{'---'}(.*?)#{'---'}/m, 1]
+    end
+
+    def unpublished_header
+      headers_attributes = article_header.split("\n")
+      unpublished = 'published: false'
+
+      headers_attributes.map! do |attribute|
+        attribute.include?('published:') ? unpublished : attribute
+      end
+
+      unless headers_attributes.include?(unpublished)
+        headers_attributes << unpublished
+      end
+
+      unpublished_header ||= headers_attributes.join("\n") + "\n"
+    end
 
     # Saves the raw payload and converts the payload to JSON format
     def get_payload_request(request)
