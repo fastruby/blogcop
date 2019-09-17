@@ -6,6 +6,8 @@ require 'openssl'     # Verifies the webhook signature
 require 'jwt'         # Authenticates a GitHub App
 require 'time'        # Gets ISO 8601 representation of a Time object
 require 'logger'      # Logs debug statements
+require 'byebug'
+require 'httparty'
 
 set :port, 3000
 set :bind, '0.0.0.0'
