@@ -3,10 +3,18 @@ GEM
   specs:
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    byebug (11.0.1)
     dotenv (2.5.0)
     faraday (0.15.3)
       multipart-post (>= 1.2, < 3)
+    httparty (0.17.0)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     jwt (2.1.0)
+    mime-types (3.3)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2019.0904)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
     mustermann (1.0.3)
     octokit (4.13.0)
@@ -29,10 +37,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug (~> 11.0)
   dotenv
+  httparty (~> 0.17.0)
   jwt (~> 2.1)
   octokit (~> 4.0)
   sinatra (~> 2.0)
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
