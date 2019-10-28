@@ -9,9 +9,6 @@ require 'logger'      # Logs debug statements
 require 'byebug'
 require 'httparty'
 
-set :port, 3000
-set :bind, '0.0.0.0'
-
 class GHAapp < Sinatra::Application
 
   # Expects that the private key in PEM format. Converts the newlines
