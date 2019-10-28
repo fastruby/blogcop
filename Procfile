@@ -1,1 +1,1 @@
-web: ruby template_server.rb
+web: ruby server.rb

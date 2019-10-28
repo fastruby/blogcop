@@ -1,2 +1,2 @@
-require "./template_server"
+require "./server"
 run GHAapp
