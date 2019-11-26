@@ -12,19 +12,29 @@ The bot is available to install on the [GitHub Marketplace](https://github.com/m
 
 ### Requirements
 
-Ruby >= 2.2.0
+- Ruby >= 2.2.0
+
+- Have a [GitHub app](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) with these settings: 
+  - Repository permissions
+    - Contents (Read & Write)
+    - Issues (Read & Write)
+    - Pull requests (Read & Write)
+  - Subscribe to events
+    - Issues
+    - Pull request
+    - Push
 
 ### Steps
 
 1. Clone the repository to your local machine: `git clone git@github.com:ombulabs/outdated-article.git`
 2. Go to the new directory and run `bundle`
-3. Create a copy of the environment variables: `cp .env-example .env`
+3. Create a copy of the environment variables: `cp .env.sample .env`
 4. Add your GitHub App's private key, app ID, and webhook secret to the `.env` file.
 5. Run `ruby server.rb`
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ombulabs/outdated-article/issues.
+Bug reports are welcome at https://github.com/ombulabs/outdated-article/issues as well as pull requests.
 
 ## Support
 
