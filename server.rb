@@ -9,7 +9,7 @@ require 'logger'      # Logs debug statements
 require 'byebug'
 require 'httparty'
 
-class GHAapp < Sinatra::Application
+class Blogcop < Sinatra::Application
 
   # Expects that the private key in PEM format. Converts the newlines
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n"))
