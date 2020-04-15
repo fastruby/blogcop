@@ -32,6 +32,14 @@ The bot is available to install on the [GitHub Marketplace](https://github.com/m
 4. Add your GitHub App's private key, app ID, and webhook secret to the `.env` file.
 5. Run `ruby server.rb`
 
+## Task
+
+To check blogposts on all installations on demand, run the command `ruby check_outdated_posts.rb`. This is used to add a cronjob.
+
+## Testing
+
+run `ruby tests.rb`
+
 ## Contributing
 
 Bug reports are welcome at https://github.com/ombulabs/blogcop/issues as well as pull requests.

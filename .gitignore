@@ -1,3 +1,4 @@
 node_modules
 .env
 .byebug_history
+.DS_store
