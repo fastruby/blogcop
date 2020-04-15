@@ -44,4 +44,3 @@ class ArticleHandler
     headers_attributes.join("\n") + "\n"
   end
 end
-  
