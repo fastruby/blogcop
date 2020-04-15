@@ -34,7 +34,7 @@ The bot is available to install on the [GitHub Marketplace](https://github.com/m
 
 ## Task
 
-To check blogposts on all installations on demand, run the command `ruby check_outdated_posts.rb`. This is used to add a cronjob.
+To check blogposts on all installations on demand, run the command `ruby check_outdated_posts.rb`. This can be triggered with a cronjob.
 
 ## Testing
 
