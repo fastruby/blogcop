@@ -7,8 +7,8 @@ require 'time'        # Gets ISO 8601 representation of a Time object
 require 'logger'      # Logs debug statements
 require 'byebug'
 
-require_relative './repository_handler.rb'
-require_relative './article_handler.rb'
+require_relative './models/repository_handler.rb'
+require_relative './models/article_handler.rb'
 
 class ArticlesChecker
   # Expects that the private key in PEM format. Converts the newlines
@@ -26,14 +26,14 @@ class ArticlesChecker
   # a malicious third party.
   def authenticate_app
     payload = {
-        # The time that this JWT was issued, _i.e._ now.
-        iat: Time.now.to_i,
+      # The time that this JWT was issued, _i.e._ now.
+      iat: Time.now.to_i,
 
-        # JWT expiration time (10 minute maximum)
-        exp: Time.now.to_i + (10 * 60),
+      # JWT expiration time (10 minute maximum)
+      exp: Time.now.to_i + (10 * 60),
 
-        # Your GitHub App's identifier number
-        iss: APP_IDENTIFIER
+      # Your GitHub App's identifier number
+      iss: APP_IDENTIFIER
     }
 
     # Cryptographically sign the JWT.
@@ -69,10 +69,10 @@ class ArticlesChecker
     client.access_token = nil
 
     # get token for current installation
-    token = client.create_app_installation_access_token(installation.id)
+    token = client.create_app_installation_access_token(installation.id).token
 
     # set token on client
-    client.access_token = token.token    
+    client.access_token = token
   end
 end
 
