@@ -22,13 +22,11 @@ GEM
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
-    httparty (0.17.0)
-      mime-types (~> 3.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     jwt (2.1.0)
-    mime-types (3.3)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.0904)
+    mini_mime (1.1.2)
     minitest (5.14.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -57,7 +55,7 @@ PLATFORMS
 DEPENDENCIES
   byebug (~> 11.0)
   dotenv
-  httparty (~> 0.17.0)
+  httparty (~> 0.21.0)
   jwt (~> 2.1)
   minitest
   octokit (~> 4.0)
